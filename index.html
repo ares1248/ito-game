@@ -1080,10 +1080,16 @@ function init() {
 
 // DOM読み込み後に初期化
 function initializeTopics() {
-  // localStorageからカスタムお題を読み込み
+  // localStorageからカスタムお題を読み込み（既存の配列を保持）
   const customTopics = localStorage.getItem("itoCustomTopics");
   if(customTopics) {
-    topics.custom = JSON.parse(customTopics);
+    const savedCustomTopics = JSON.parse(customTopics);
+    // 既存のデフォルトお題を保持しつつ、保存されたお題を追加
+    savedCustomTopics.forEach(topic => {
+      if(!topics.custom.includes(topic)) {
+        topics.custom.push(topic);
+      }
+    });
   }
   
   // 各カテゴリのカスタムお題を読み込み
@@ -1091,7 +1097,13 @@ function initializeTopics() {
     if(category !== 'custom') {
       const saved = localStorage.getItem(`itoCustomTopics_${category}`);
       if(saved) {
-        topics[category] = JSON.parse(saved);
+        const savedTopics = JSON.parse(saved);
+        // 既存のデフォルトお題を保持しつつ、保存されたお題を追加
+        savedTopics.forEach(topic => {
+          if(!topics[category].includes(topic)) {
+            topics[category].push(topic);
+          }
+        });
       }
     }
   });
