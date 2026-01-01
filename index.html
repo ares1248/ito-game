@@ -1079,9 +1079,31 @@ function init() {
 }
 
 // DOM読み込み後に初期化
+function initializeTopics() {
+  // localStorageからカスタムお題を読み込み
+  const customTopics = localStorage.getItem("itoCustomTopics");
+  if(customTopics) {
+    topics.custom = JSON.parse(customTopics);
+  }
+  
+  // 各カテゴリのカスタムお題を読み込み
+  Object.keys(topics).forEach(category => {
+    if(category !== 'custom') {
+      const saved = localStorage.getItem(`itoCustomTopics_${category}`);
+      if(saved) {
+        topics[category] = JSON.parse(saved);
+      }
+    }
+  });
+}
+
 if(document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
+  document.addEventListener("DOMContentLoaded", () => {
+    initializeTopics();
+    init();
+  });
 } else {
+  initializeTopics();
   init();
 }
 </script>
